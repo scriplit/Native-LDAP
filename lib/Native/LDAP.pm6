@@ -72,6 +72,64 @@ module Native::LDAP:ver<0.0.1> {
     constant LDAP_SCOPE_CHILDREN is export = LDAP_SCOPE_SUBORDINATE;
     constant LDAP_SCOPE_DEFAULT is export = -1;
 
+    constant LDAP_SUCCESS is export = 0x00;
+    constant LDAP_OPERATIONS_ERROR is export = 0x01;
+    constant LDAP_PROTOCOL_ERROR is export = 0x02;
+    constant LDAP_TIMELIMIT_EXCEEDED is export = 0x03;
+    constant LDAP_SIZELIMIT_EXCEEDED is export = 0x04;
+    constant LDAP_COMPARE_FALSE is export = 0x05;
+    constant LDAP_COMPARE_TRUE is export = 0x06;
+    constant LDAP_AUTH_METHOD_NOT_SUPPORTED is export = 0x07;
+    constant LDAP_STRONG_AUTH_NOT_SUPPORTED is export = LDAP_AUTH_METHOD_NOT_SUPPORTED;
+    constant LDAP_STRONG_AUTH_REQUIRED is export = 0x08;
+    constant LDAP_STRONGER_AUTH_REQUIRED is export = LDAP_STRONG_AUTH_REQUIRED;
+    constant LDAP_PARTIAL_RESULTS is export = 0x09;
+    constant LDAP_REFERRAL is export = 0x0a;
+    constant LDAP_ADMINLIMIT_EXCEEDED is export = 0x0b;
+    constant LDAP_UNAVAILABLE_CRITICAL_EXTENSION = 0x0c;
+    constant LDAP_CONFIDENTIALITY_REQUIRED is export = 0x0d;
+    constant LDAP_SASL_BIND_IN_PROGRESS is export = 0x0e;
+    constant LDAP_NO_SUCH_ATTRIBUTE is export = 0x10;
+    constant LDAP_UNDEFINED_TYPE is export = 0x11;
+    constant LDAP_INAPPROPRIATE_MATCHING is export = 0x12;
+    constant LDAP_CONSTRAINT_VIOLATION is export = 0x13;
+    constant LDAP_TYPE_OR_VALUE_EXISTS is export = 0x14;
+    constant LDAP_INVALID_SYNTAX is export = 0x15;
+    constant LDAP_NO_SUCH_OBJECT is export = 0x20;
+    constant LDAP_ALIAS_PROBLEM is export = 0x21;
+    constant LDAP_INVALID_DN_SYNTAX is export = 0x22;
+    constant LDAP_IS_LEAF is export = 0x23;
+    constant LDAP_ALIAS_DEREF_PROBLEM is export = 0x24;
+    constant LDAP_X_PROXY_AUTHZ_FAILURE is export = 0x2F;
+    constant LDAP_INAPPROPRIATE_AUTH is export = 0x30;
+    constant LDAP_INVALID_CREDENTIALS is export = 0x31;
+    constant LDAP_INSUFFICIENT_ACCESS is export = 0x32;
+    constant LDAP_BUSY is export = 0x33;
+    constant LDAP_UNAVAILABLE is export = 0x34;
+    constant LDAP_UNWILLING_TO_PERFORM is export = 0x35;
+    constant LDAP_LOOP_DETECT is export = 0x36;
+    constant LDAP_NAMING_VIOLATION is export = 0x40;
+    constant LDAP_OBJECT_CLASS_VIOLATION is export = 0x41;
+    constant LDAP_NOT_ALLOWED_ON_NONLEAF is export = 0x42;
+    constant LDAP_NOT_ALLOWED_ON_RDN is export = 0x43;
+    constant LDAP_ALREADY_EXISTS is export = 0x44;
+    constant LDAP_NO_OBJECT_CLASS_MODS is export = 0x45;
+    constant LDAP_RESULTS_TOO_LARGE is export = 0x46;
+    constant LDAP_AFFECTS_MULTIPLE_DSAS is export = 0x47;
+    constant LDAP_VLV_ERROR is export = 0x4C;
+    constant LDAP_OTHER is export = 0x50;
+    constant LDAP_CUP_RESOURCES_EXHAUSTED is export = 0x71;
+    constant LDAP_CUP_SECURITY_VIOLATION is export = 0x72;
+    constant LDAP_CUP_INVALID_DATA is export = 0x73;
+    constant LDAP_CUP_UNSUPPORTED_SCHEME is export = 0x74;
+    constant LDAP_CUP_RELOAD_REQUIRED is export = 0x75;
+    constant LDAP_CANCELLED is export = 0x76;
+    constant LDAP_NO_SUCH_OPERATION is export = 0x77;
+    constant LDAP_TOO_LATE is export = 0x78;
+    constant LDAP_CANNOT_CANCEL is export = 0x79;
+    constant LDAP_ASSERTION_FAILED is export = 0x7A;
+    constant LDAP_PROXIED_AUTHORIZATION_DENIED is export = 0x7B;
+
 	class Native::LDAP::Handle is repr('CPointer') { }
 	class Native::LDAP::Message is repr('CPointer') { }
 
