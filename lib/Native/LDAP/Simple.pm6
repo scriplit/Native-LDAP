@@ -51,17 +51,17 @@ class Native::LDAP::Simple:ver<0.0.1> is export {
         $pmsg[0] = Native::LDAP::LDAPMessage; # Ensures a slot exists
         my $subtree = int32.new(LDAP_SCOPE_SUBTREE) unless defined $scope;
         my $ret = ldap_search_ext_s(
-				$!ldh,
-				$base,
-				$scope // $subtree,
-				$filter // "(objectClass=*)",
-				CArray[Str],
-				0,
-				Pointer,
-				Pointer,
-				Pointer[timeval],
-				0,
-				$pmsg);
+                $!ldh,
+                $base,
+                $scope // $subtree,
+                $filter // "(objectClass=*)",
+                CArray[Str],
+                0,
+                Pointer,
+                Pointer,
+                Pointer[timeval],
+                0,
+                $pmsg);
 
         $.lasterror = $ret;
 
@@ -80,10 +80,10 @@ class Native::LDAP::Simple:ver<0.0.1> is export {
 
         my @entries;
         loop (my $entry = ldap_first_entry($!ldh, $ldm);
-        			defined $entry;
-        			$entry = ldap_next_entry($!ldh, $entry) ) {
+                    defined $entry;
+                    $entry = ldap_next_entry($!ldh, $entry) ) {
                         @entries.push($entry.deref);
-        			}
+                    }
         return @entries;
     }
 

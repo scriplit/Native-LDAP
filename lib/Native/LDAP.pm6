@@ -3,12 +3,12 @@ use NativeCall;
 
 module Native::LDAP:ver<0.0.1> {
 
-	sub libldap {
-		return $*VM.platform-library-name('ldap'.IO).Str;
-	}
+    sub libldap {
+        return $*VM.platform-library-name('ldap'.IO).Str;
+    }
     sub liblber {
-		return $*VM.platform-library-name('lber'.IO).Str;
-	}
+        return $*VM.platform-library-name('lber'.IO).Str;
+    }
 
 
     constant LDAP_VERSION1 is export = 1;
@@ -134,77 +134,77 @@ module Native::LDAP:ver<0.0.1> {
     constant LDAP_ASSERTION_FAILED is export = 0x7A;
     constant LDAP_PROXIED_AUTHORIZATION_DENIED is export = 0x7B;
 
-	class LDAPHandle is repr('CPointer') { }
-	class LDAPMessage is repr('CPointer') { }
+    class LDAPHandle is repr('CPointer') { }
+    class LDAPMessage is repr('CPointer') { }
     class BerElement is repr('CPointer') { }
 
-	class timeval is repr('CStruct') is export {
-	  has long $tv_sec;
-	  has long $tv_usec;
-	}
+    class timeval is repr('CStruct') is export {
+      has long $tv_sec;
+      has long $tv_usec;
+    }
 
-	#`[
-	LDAP *ldap_init(host, port)
-	char *host;
-	int port;
-	]
-	# sub ldap_init(Str, int32) returns LDAPHandle is native('ldap_r-2.4', v2) {*};
-	sub ldap_init(Str, int32) returns LDAPHandle is export is native(&libldap) {*};
+    #`[
+    LDAP *ldap_init(host, port)
+    char *host;
+    int port;
+    ]
+    # sub ldap_init(Str, int32) returns LDAPHandle is native('ldap_r-2.4', v2) {*};
+    sub ldap_init(Str, int32) returns LDAPHandle is export is native(&libldap) {*};
 
-	# int ldap_get_option(LDAP *ld, int option, void *outvalue);
-	sub ldap_get_option(LDAPHandle, int32, CArray[int32])
-		returns int32 is export is native(&libldap) {*};
+    # int ldap_get_option(LDAP *ld, int option, void *outvalue);
+    sub ldap_get_option(LDAPHandle, int32, CArray[int32])
+        returns int32 is export is native(&libldap) {*};
 
-	# int ldap_set_option(LDAP *ld, int option, const void *invalue);
-	sub ldap_set_option(LDAPHandle, int32, CArray[int32])
-		returns int32 is export is native(&libldap) {*};
+    # int ldap_set_option(LDAP *ld, int option, const void *invalue);
+    sub ldap_set_option(LDAPHandle, int32, CArray[int32])
+        returns int32 is export is native(&libldap) {*};
 
-	# int ldap_simple_bind(LDAP *ld, const char *who, const char *passwd);
-	sub ldap_simple_bind_s(LDAPHandle, Str, Str)
-		returns int32 is export is native(&libldap) {*};
-	#`[
-	int ldap_search_ext_s(
-				 LDAP *ld,
-				 char *base,
-				 int scope,
-				 char *filter,
-				 char *attrs[],
-				 int attrsonly,
-				 LDAPControl **serverctrls,
-				 LDAPControl **clientctrls,
-				 struct timeval *timeout,
-				 int sizelimit,
-				 LDAPMessage **res );
-	]
-	sub ldap_search_ext_s(
-		LDAPHandle,
-		Str,
-		int32,
-		Str,
-		CArray[Str],
-		int32,
-		Pointer,
-		Pointer,
-		Pointer[timeval],
-		int32,
-		CArray[LDAPMessage] )
-			returns int32 is export is native(&libldap) {*};
+    # int ldap_simple_bind(LDAP *ld, const char *who, const char *passwd);
+    sub ldap_simple_bind_s(LDAPHandle, Str, Str)
+        returns int32 is export is native(&libldap) {*};
+    #`[
+    int ldap_search_ext_s(
+                 LDAP *ld,
+                 char *base,
+                 int scope,
+                 char *filter,
+                 char *attrs[],
+                 int attrsonly,
+                 LDAPControl **serverctrls,
+                 LDAPControl **clientctrls,
+                 struct timeval *timeout,
+                 int sizelimit,
+                 LDAPMessage **res );
+    ]
+    sub ldap_search_ext_s(
+        LDAPHandle,
+        Str,
+        int32,
+        Str,
+        CArray[Str],
+        int32,
+        Pointer,
+        Pointer,
+        Pointer[timeval],
+        int32,
+        CArray[LDAPMessage] )
+            returns int32 is export is native(&libldap) {*};
 
-	# int ldap_count_entries( LDAP *ld, LDAPMessage *result )
-	sub ldap_count_entries(LDAPHandle, LDAPMessage)
-		returns int32 is export is native(&libldap) {*};
+    # int ldap_count_entries( LDAP *ld, LDAPMessage *result )
+    sub ldap_count_entries(LDAPHandle, LDAPMessage)
+        returns int32 is export is native(&libldap) {*};
 
-	# LDAPMessage *ldap_first_entry( LDAP *ld, LDAPMessage *result )
-	sub ldap_first_entry(LDAPHandle, LDAPMessage)
-		returns Pointer[LDAPMessage] is export is native(&libldap) {*};
+    # LDAPMessage *ldap_first_entry( LDAP *ld, LDAPMessage *result )
+    sub ldap_first_entry(LDAPHandle, LDAPMessage)
+        returns Pointer[LDAPMessage] is export is native(&libldap) {*};
 
-	# LDAPMessage *ldap_next_entry( LDAP *ld, LDAPMessage *entry )
-	sub ldap_next_entry(LDAPHandle, LDAPMessage)
-		returns Pointer[LDAPMessage] is export is native(&libldap) {*};
+    # LDAPMessage *ldap_next_entry( LDAP *ld, LDAPMessage *entry )
+    sub ldap_next_entry(LDAPHandle, LDAPMessage)
+        returns Pointer[LDAPMessage] is export is native(&libldap) {*};
 
-	# char *ldap_get_dn( LDAP *ld, LDAPMessage *entry )
-	sub ldap_get_dn(LDAPHandle, LDAPMessage)
-		returns Str is export is native(&libldap) {*};
+    # char *ldap_get_dn( LDAP *ld, LDAPMessage *entry )
+    sub ldap_get_dn(LDAPHandle, LDAPMessage)
+        returns Str is export is native(&libldap) {*};
 
     # void ldap_memfree(void *p);
     sub ldap_memfree(Pointer[void]) is export is native(&libldap) {*};

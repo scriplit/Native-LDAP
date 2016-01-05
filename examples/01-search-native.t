@@ -35,17 +35,17 @@ my $pmsg = CArray[Native::LDAP::LDAPMessage].new;
 $pmsg[0] = Native::LDAP::LDAPMessage; # Ensures a slot exists
 my int32 $scope = int32.new(LDAP_SCOPE_SUBTREE);
 $ret = ldap_search_ext_s(
-					$ld,
-					"dc=test,dc=picnet,dc=pl",
-					$scope,
-					"(objectClass=*)",
-					CArray[Str],
-					0,
-					Pointer,
-					Pointer,
-					Pointer[timeval],
-					0,
-					$pmsg);
+                    $ld,
+                    "dc=test,dc=picnet,dc=pl",
+                    $scope,
+                    "(objectClass=*)",
+                    CArray[Str],
+                    0,
+                    Pointer,
+                    Pointer,
+                    Pointer[timeval],
+                    0,
+                    $pmsg);
 
 ok $ret == 0, 'ldap_search_ext_s() returns OK';
 
@@ -56,10 +56,10 @@ ok $nent == 5, 'ldap_count_entries() returns correct number of elts';
 my $entry;
 my $index = 0;
 loop ($entry = ldap_first_entry($ld, $pmsg[0]);
-			defined $entry;
-			$entry = ldap_next_entry($ld, $entry) ) {
-				my $dn = ldap_get_dn($ld, $entry);
-				ok $dn.ends-with("dc=test,dc=picnet,dc=pl"), 'entry #' ~ $index++ ;
+            defined $entry;
+            $entry = ldap_next_entry($ld, $entry) ) {
+                my $dn = ldap_get_dn($ld, $entry);
+                ok $dn.ends-with("dc=test,dc=picnet,dc=pl"), 'entry #' ~ $index++ ;
 
                 my @ber := CArray[Native::LDAP::BerElement].new;
                 @ber[0] = Native::LDAP::BerElement;
@@ -76,4 +76,4 @@ loop ($entry = ldap_first_entry($ld, $pmsg[0]);
                         ldap_value_free(@values);
                     }
                 ber_free(@ber[0], 0);
-			}
+            }
