@@ -60,4 +60,20 @@ loop ($entry = ldap_first_entry($ld, $pmsg[0]);
 			$entry = ldap_next_entry($ld, $entry) ) {
 				my $dn = ldap_get_dn($ld, $entry);
 				ok $dn.ends-with("dc=test,dc=picnet,dc=pl"), 'entry #' ~ $index++ ;
+
+                my @ber := CArray[Native::LDAP::BerElement].new;
+                @ber[0] = Native::LDAP::BerElement;
+                loop (my $attr = ldap_first_attribute($ld, $entry, @ber);
+                    defined $attr;
+                    $attr = ldap_next_attribute($ld, $entry, @ber[0]) ) {
+                        say $attr.indent(4);
+                        my @values := ldap_get_values($ld, $entry, $attr);
+                        my $count = ldap_count_values(@values);
+                        loop (my $i = 0; $i < $count; $i++) {
+                            my $t = "[" ~ @values[$i]  ~ "]";
+                            say $t.indent(6);
+                        }
+                        ldap_value_free(@values);
+                    }
+                ber_free(@ber[0], 0);
 			}

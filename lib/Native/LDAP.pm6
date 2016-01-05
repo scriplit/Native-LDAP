@@ -6,6 +6,10 @@ module Native::LDAP:ver<0.0.1> {
 	sub libldap {
 		return $*VM.platform-library-name('ldap'.IO).Str;
 	}
+    sub liblber {
+		return $*VM.platform-library-name('lber'.IO).Str;
+	}
+
 
     constant LDAP_VERSION1 is export = 1;
     constant LDAP_VERSION2 is export = 2;
@@ -132,6 +136,7 @@ module Native::LDAP:ver<0.0.1> {
 
 	class LDAPHandle is repr('CPointer') { }
 	class LDAPMessage is repr('CPointer') { }
+    class BerElement is repr('CPointer') { }
 
 	class timeval is repr('CStruct') is export {
 	  has long $tv_sec;
@@ -200,4 +205,42 @@ module Native::LDAP:ver<0.0.1> {
 	# char *ldap_get_dn( LDAP *ld, LDAPMessage *entry )
 	sub ldap_get_dn(LDAPHandle, LDAPMessage)
 		returns Str is export is native(&libldap) {*};
+
+    # void ldap_memfree(void *p);
+    sub ldap_memfree(Pointer[void]) is export is native(&libldap) {*};
+
+    # void ber_free(BerElement *ber, int freebuf);
+    sub ber_free(Pointer[void], int32) is export is native(&liblber) {*};
+
+    # char *ldap_first_attribute(
+    #    LDAP *ld, LDAPMessage *entry, BerElement **berptr )
+    sub ldap_first_attribute(LDAPHandle, LDAPMessage, CArray[BerElement])
+        returns Str is export is native(&libldap) {*};
+
+    # char *ldap_next_attribute(
+    #   LDAP *ld, LDAPMessage *entry, BerElement *ber )
+    sub ldap_next_attribute(LDAPHandle, LDAPMessage, BerElement)
+        returns Str is export is native(&libldap) {*};
+
+    #`[
+        char **ldap_get_values(ld, entry, attr)
+        LDAP *ld;
+        LDAPMessage *entry;
+        char *attr;
+    ]
+    sub ldap_get_values(LDAPHandle, LDAPMessage, Str)
+        returns CArray[Str] is export is native(&libldap) {*};
+
+    #`[
+        int ldap_count_values(vals)
+        char **vals;
+    ]
+    sub ldap_count_values(CArray[Str])
+        returns int32 is export is native(&libldap) {*};
+
+    #`[
+        void ldap_value_free(vals)
+        char **vals;
+    ]
+    sub ldap_value_free(CArray[Str]) is export is native(&libldap) {*};
 }
