@@ -3,11 +3,11 @@ use Test;
 use lib 'lib';
 use NativeCall;
 
-plan 14;
+plan 13;
 
 use Native::LDAP;
 
-my Native::LDAP::Handle $ld = ldap_init('localhost', LDAP_PORT);
+my Native::LDAP::LDAPHandle $ld = ldap_init('localhost', LDAP_PORT);
 die 'LDAP init failed' unless $ld.defined;
 pass 'LDAP_init()';
 
@@ -31,8 +31,8 @@ $ret = ldap_simple_bind_s($ld, "cn=admin,dc=test,dc=picnet,dc=pl", "secret");
 ok $ret == 0, 'ldap_simple_bind_s() returns OK';
 
 # search!
-my $pmsg = CArray[Native::LDAP::Message].new;
-$pmsg[0] = Native::LDAP::Message; # Ensures a slot exists
+my $pmsg = CArray[Native::LDAP::LDAPMessage].new;
+$pmsg[0] = Native::LDAP::LDAPMessage; # Ensures a slot exists
 my int32 $scope = int32.new(LDAP_SCOPE_SUBTREE);
 $ret = ldap_search_ext_s(
 					$ld,
@@ -50,7 +50,6 @@ $ret = ldap_search_ext_s(
 ok $ret == 0, 'ldap_search_ext_s() returns OK';
 
 my $nent = ldap_count_entries($ld, $pmsg[0]);
-ok $ret == 0, 'ldap_count_entries() returns OK';
 ok $nent == 5, 'ldap_count_entries() returns correct number of elts';
 
 # entry = ldap_first_entry(ld, msg);

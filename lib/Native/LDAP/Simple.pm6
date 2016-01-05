@@ -7,7 +7,7 @@ class Native::LDAP::Simple:ver<0.0.1> is export {
     has Str $.host is required;
     has Int $.port = LDAP_PORT;
     has Int $.lasterror is rw;
-    has Native::LDAP::Handle $!ldh;
+    has Native::LDAP::LDAPHandle $!ldh;
 
     has Bool $!init-done = False;
     has Bool $!ldap3-done = False;
@@ -47,8 +47,8 @@ class Native::LDAP::Simple:ver<0.0.1> is export {
     method search(Str :$base, Str :$filter, Int :$scope) {
 
         die "Not bound" unless $!bind-done;
-        my $pmsg = CArray[Native::LDAP::Message].new;
-        $pmsg[0] = Native::LDAP::Message; # Ensures a slot exists
+        my $pmsg = CArray[Native::LDAP::LDAPMessage].new;
+        $pmsg[0] = Native::LDAP::LDAPMessage; # Ensures a slot exists
         my $subtree = int32.new(LDAP_SCOPE_SUBTREE) unless defined $scope;
         my $ret = ldap_search_ext_s(
 				$!ldh,
@@ -66,5 +66,28 @@ class Native::LDAP::Simple:ver<0.0.1> is export {
         $.lasterror = $ret;
 
         return $pmsg[0];
+    }
+
+    method count-entries(Native::LDAP::LDAPMessage $ldm) returns Int {
+
+        die "Not bound" unless $!bind-done;
+        die "Not a valid LDAPMessage" unless defined $ldm;
+        my $nent = ldap_count_entries($!ldh, $ldm);
+        return $nent;
+    }
+
+    method get-entries(Native::LDAP::LDAPMessage $ldm)  {
+
+        my @entries;
+        loop (my $entry = ldap_first_entry($!ldh, $ldm);
+        			defined $entry;
+        			$entry = ldap_next_entry($!ldh, $entry) ) {
+                        @entries.push($entry.deref);
+        			}
+        return @entries;
+    }
+
+    method get-dn(Native::LDAP::LDAPMessage $entry) {
+        return ldap_get_dn($!ldh, $entry);
     }
 }

@@ -41,8 +41,8 @@ module Native::LDAP:ver<0.0.1> {
     constant LDAP_OPT_HOST_NAME is export = 0x0030;
     constant LDAP_OPT_RESULT_CODE is export = 0x0031;
     constant LDAP_OPT_ERROR_NUMBER is export = LDAP_OPT_RESULT_CODE;
-    constant LDAP_OPT_DIAGNOSTIC_MESSAGE is export = 0x0032;
-    constant LDAP_OPT_ERROR_STRING is export = LDAP_OPT_DIAGNOSTIC_MESSAGE;
+    constant LDAP_OPT_DIAGNOSTIC_LDAPMessage is export = 0x0032;
+    constant LDAP_OPT_ERROR_STRING is export = LDAP_OPT_DIAGNOSTIC_LDAPMessage;
     constant LDAP_OPT_MATCHED_DN is export = 0x0033;
     constant LDAP_OPT_SSPI_FLAGS is export = 0x0092;
     constant LDAP_OPT_SIGN is export = 0x0095;
@@ -130,8 +130,8 @@ module Native::LDAP:ver<0.0.1> {
     constant LDAP_ASSERTION_FAILED is export = 0x7A;
     constant LDAP_PROXIED_AUTHORIZATION_DENIED is export = 0x7B;
 
-	class Native::LDAP::Handle is repr('CPointer') { }
-	class Native::LDAP::Message is repr('CPointer') { }
+	class LDAPHandle is repr('CPointer') { }
+	class LDAPMessage is repr('CPointer') { }
 
 	class timeval is repr('CStruct') is export {
 	  has long $tv_sec;
@@ -143,19 +143,19 @@ module Native::LDAP:ver<0.0.1> {
 	char *host;
 	int port;
 	]
-	# sub ldap_init(Str, int32) returns Native::LDAP::Handle is native('ldap_r-2.4', v2) {*};
-	sub ldap_init(Str, int32) returns Native::LDAP::Handle is export is native(&libldap) {*};
+	# sub ldap_init(Str, int32) returns LDAPHandle is native('ldap_r-2.4', v2) {*};
+	sub ldap_init(Str, int32) returns LDAPHandle is export is native(&libldap) {*};
 
 	# int ldap_get_option(LDAP *ld, int option, void *outvalue);
-	sub ldap_get_option(Native::LDAP::Handle, int32, CArray[int32])
+	sub ldap_get_option(LDAPHandle, int32, CArray[int32])
 		returns int32 is export is native(&libldap) {*};
 
 	# int ldap_set_option(LDAP *ld, int option, const void *invalue);
-	sub ldap_set_option(Native::LDAP::Handle, int32, CArray[int32])
+	sub ldap_set_option(LDAPHandle, int32, CArray[int32])
 		returns int32 is export is native(&libldap) {*};
 
 	# int ldap_simple_bind(LDAP *ld, const char *who, const char *passwd);
-	sub ldap_simple_bind_s(Native::LDAP::Handle, Str, Str)
+	sub ldap_simple_bind_s(LDAPHandle, Str, Str)
 		returns int32 is export is native(&libldap) {*};
 	#`[
 	int ldap_search_ext_s(
@@ -169,10 +169,10 @@ module Native::LDAP:ver<0.0.1> {
 				 LDAPControl **clientctrls,
 				 struct timeval *timeout,
 				 int sizelimit,
-				 Native::LDAP::Message **res );
+				 LDAPMessage **res );
 	]
 	sub ldap_search_ext_s(
-		Native::LDAP::Handle,
+		LDAPHandle,
 		Str,
 		int32,
 		Str,
@@ -182,22 +182,22 @@ module Native::LDAP:ver<0.0.1> {
 		Pointer,
 		Pointer[timeval],
 		int32,
-		CArray[Native::LDAP::Message] )
+		CArray[LDAPMessage] )
 			returns int32 is export is native(&libldap) {*};
 
-	# int ldap_count_entries( LDAP *ld, Native::LDAP::Message *result )
-	sub ldap_count_entries(Native::LDAP::Handle, Pointer[Native::LDAP::Message])
+	# int ldap_count_entries( LDAP *ld, LDAPMessage *result )
+	sub ldap_count_entries(LDAPHandle, LDAPMessage)
 		returns int32 is export is native(&libldap) {*};
 
-	# Native::LDAP::Message *ldap_first_entry( LDAP *ld, Native::LDAP::Message *result )
-	sub ldap_first_entry(Native::LDAP::Handle, Pointer[Native::LDAP::Message])
-		returns Pointer[Native::LDAP::Message] is export is native(&libldap) {*};
+	# LDAPMessage *ldap_first_entry( LDAP *ld, LDAPMessage *result )
+	sub ldap_first_entry(LDAPHandle, LDAPMessage)
+		returns Pointer[LDAPMessage] is export is native(&libldap) {*};
 
-	# Native::LDAP::Message *ldap_next_entry( LDAP *ld, Native::LDAP::Message *entry )
-	sub ldap_next_entry(Native::LDAP::Handle, Pointer[Native::LDAP::Message])
-		returns Pointer[Native::LDAP::Message] is export is native(&libldap) {*};
+	# LDAPMessage *ldap_next_entry( LDAP *ld, LDAPMessage *entry )
+	sub ldap_next_entry(LDAPHandle, LDAPMessage)
+		returns Pointer[LDAPMessage] is export is native(&libldap) {*};
 
-	# char *ldap_get_dn( LDAP *ld, Native::LDAP::Message *entry )
-	sub ldap_get_dn(Native::LDAP::Handle, Pointer[Native::LDAP::Message])
+	# char *ldap_get_dn( LDAP *ld, LDAPMessage *entry )
+	sub ldap_get_dn(LDAPHandle, LDAPMessage)
 		returns Str is export is native(&libldap) {*};
 }
